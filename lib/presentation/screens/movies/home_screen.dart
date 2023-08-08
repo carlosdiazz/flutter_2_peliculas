@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_2_cinema_app/presentation/providers/movies/movies_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+//Propio
+import 'package:flutter_2_cinema_app/presentation/providers/providers.dart';
+import 'package:flutter_2_cinema_app/presentation/widgets/widggets.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -9,6 +12,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: _HomeView(),
+      bottomNavigationBar: CustomBottomNavigation(),
     );
   }
 }
@@ -24,26 +28,42 @@ class _HomeViewState extends ConsumerState<_HomeView> {
   @override
   void initState() {
     super.initState();
-    final movies = ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
-    print(movies);
+    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+    //print(movies);
   }
 
   @override
   Widget build(BuildContext context) {
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    final moviesSlidesshowProvider = ref.watch(moviesSlideshowProvider);
 
-    if (nowPlayingMovies.isEmpty) {
+    if (moviesSlidesshowProvider.isEmpty) {
       return const Center(
         child: CircularProgressIndicator(),
       );
     }
 
-    return ListView.builder(
-      itemCount: nowPlayingMovies.length,
-      itemBuilder: (context, index) {
-        final movie = nowPlayingMovies[index];
-        return ListTile(title: Text(movie.title));
-      },
+    return Column(
+      children: [
+        const CustomAppBar(),
+        MoviesSlideShow(movies: moviesSlidesshowProvider),
+        MovieHorizontalListview(
+          movies: nowPlayingMovies,
+          title: "En Cines",
+          subTitle: "Lun, 20",
+          loadNextPage: () {
+            ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+          },
+        ),
+        //Expanded(
+        //    child: ListView.builder(
+        //  itemCount: nowPlayingMovies.length,
+        //  itemBuilder: (context, index) {
+        //    final movie = nowPlayingMovies[index];
+        //    return ListTile(title: Text(movie.title));
+        //  },
+        //))
+      ],
     );
   }
 }
