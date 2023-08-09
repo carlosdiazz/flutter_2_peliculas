@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //Propio
@@ -31,21 +32,26 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
     ref.read(popularMoviesProvider.notifier).loadNextPage();
     ref.read(upComingMoviesProvider.notifier).loadNextPage();
+    ref.read(topRatedMoviesProvider.notifier).loadNextPage();
     //print(movies);
   }
 
   @override
   Widget build(BuildContext context) {
+    final initialLoading = ref.watch(initialLoadingProvider);
+    if (initialLoading) return FadeIn(child: const FullScreenLoader());
+
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
     final moviesSlidesShowProvider = ref.watch(moviesSlideshowProvider);
     final popularMoviesShowProvider = ref.watch(popularMoviesProvider);
     final upComingMoviesShowProvider = ref.watch(upComingMoviesProvider);
+    final topRatedShowProvider = ref.watch(topRatedMoviesProvider);
 
-    if (moviesSlidesShowProvider.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
+    //if (moviesSlidesShowProvider.isEmpty) {
+    //  return const Center(
+    //    child: CircularProgressIndicator(),
+    //  );
+    //}
 
     return CustomScrollView(slivers: [
       //Sliver en el menu para que se quede fijo
@@ -85,11 +91,11 @@ class _HomeViewState extends ConsumerState<_HomeView> {
               },
             ),
             MovieHorizontalListview(
-              movies: nowPlayingMovies,
+              movies: topRatedShowProvider,
               title: "Mejores calificadas",
               subTitle: "Top",
               loadNextPage: () {
-                ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+                ref.read(topRatedMoviesProvider.notifier).loadNextPage();
               },
             ),
             const SizedBox(
