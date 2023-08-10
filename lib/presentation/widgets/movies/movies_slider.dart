@@ -51,23 +51,27 @@ class _Slide extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 30),
         child: DecoratedBox(
           decoration: decoration,
-          child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.network(
-                movie.backdropPath,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress != null) {
-                    return const DecoratedBox(
-                      decoration: BoxDecoration(color: Colors.black12),
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  }
-                  return child;
-                },
-              )),
+          //TODO AQUI
+          child: Hero(
+            tag: movie.id,
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.network(
+                  movie.backdropPath,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress != null) {
+                      return const DecoratedBox(
+                        decoration: BoxDecoration(color: Colors.black12),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
+                    return child;
+                  },
+                )),
+          ),
         ),
       ),
     );

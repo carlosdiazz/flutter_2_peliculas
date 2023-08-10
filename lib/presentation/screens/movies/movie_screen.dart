@@ -69,11 +69,14 @@ class _MovieDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               //?Imagen del Pposter
-              ClipRRect(
-                borderRadius: BorderRadiusDirectional.circular(20),
-                child: Image.network(
-                  movie.posterPath,
-                  width: size.width * 0.3,
+              Hero(
+                tag: movie.id,
+                child: ClipRRect(
+                  borderRadius: BorderRadiusDirectional.circular(20),
+                  child: Image.network(
+                    movie.posterPath,
+                    width: size.width * 0.3,
+                  ),
                 ),
               ),
               const SizedBox(

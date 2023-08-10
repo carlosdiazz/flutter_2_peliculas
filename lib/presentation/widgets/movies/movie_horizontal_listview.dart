@@ -90,6 +90,7 @@ class _SlideMovie extends StatelessWidget {
         //* Esto es la Imagen
         SizedBox(
           width: 150,
+          //TODOOOO
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: Image.network(
