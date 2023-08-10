@@ -56,6 +56,7 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     return CustomScrollView(slivers: [
       //Sliver en el menu para que se quede fijo
       const SliverAppBar(
+        //?Para que el titulo se quede
         floating: true,
         flexibleSpace: FlexibleSpaceBar(
           title: CustomAppBar(),

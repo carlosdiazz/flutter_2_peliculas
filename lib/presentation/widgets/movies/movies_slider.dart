@@ -1,6 +1,7 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_2_cinema_app/domain/entities/movie.dart';
+import 'package:go_router/go_router.dart';
 
 class MoviesSlideShow extends StatelessWidget {
   const MoviesSlideShow({super.key, required this.movies});
@@ -44,27 +45,30 @@ class _Slide extends StatelessWidget {
               color: Colors.black45, blurRadius: 10, offset: Offset(0, 10))
         ]);
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 30),
-      child: DecoratedBox(
-        decoration: decoration,
-        child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image.network(
-              movie.backdropPath,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress != null) {
-                  return const DecoratedBox(
-                    decoration: BoxDecoration(color: Colors.black12),
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
-                return child;
-              },
-            )),
+    return GestureDetector(
+      onTap: () => context.push('/movie/${movie.id}'),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 30),
+        child: DecoratedBox(
+          decoration: decoration,
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.network(
+                movie.backdropPath,
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress != null) {
+                    return const DecoratedBox(
+                      decoration: BoxDecoration(color: Colors.black12),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                  return child;
+                },
+              )),
+        ),
       ),
     );
   }
