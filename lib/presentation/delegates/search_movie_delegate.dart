@@ -1,61 +1,113 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:flutter_2_cinema_app/config/helpers/human_formats.dart';
 
 //Propio
 import 'package:flutter_2_cinema_app/domain/entities/movie.dart';
+import 'package:flutter_2_cinema_app/config/helpers/human_formats.dart';
 
 typedef SearchMoviesCallback = Future<List<Movie>> Function(String query);
 
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
-  SearchMovieDelegate({required this.searchMovies})
+  SearchMovieDelegate({required this.searchMovies, required this.initialMovies})
       : super(searchFieldLabel: "Buscar pelicula");
 
   final SearchMoviesCallback searchMovies;
+  List<Movie> initialMovies;
 
-  @override
-  List<Widget>? buildActions(BuildContext context) {
-    return [
-      if (query.isNotEmpty)
-        FadeIn(
-            child: IconButton(
-                onPressed: () => query = "", icon: const Icon(Icons.clear)))
-    ];
+  StreamController<List<Movie>> debouncedMovies = StreamController.broadcast();
+  StreamController<bool> isLoadingStream = StreamController.broadcast();
+  Timer? _debounceTimer;
+
+  void _onQueryChanged(String query) {
+    isLoadingStream.add(true);
+    if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
+
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
+      //if (query.isEmpty) {
+      //  debouncedMovies.add([]);
+      //  return;
+      //}
+
+      final movies = await searchMovies(query);
+      initialMovies = movies;
+      debouncedMovies.add(movies);
+      isLoadingStream.add(false);
+    });
   }
 
-  @override
-  Widget? buildLeading(BuildContext context) {
-    return IconButton(
-        onPressed: () => close(context, null),
-        icon: Icon(Icons.arrow_back_ios_new));
+  void clearStreams() {
+    debouncedMovies.close();
   }
 
-  @override
-  Widget buildResults(BuildContext context) {
-    return Text("buildResults");
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    return FutureBuilder(
-      future: searchMovies(query),
+  Widget buildResultsAndSuggestions() {
+    return StreamBuilder(
+      initialData: initialMovies,
+      stream: debouncedMovies.stream,
       builder: (context, snapshot) {
-        print("Realizando PEticion");
-
         final movies = snapshot.data ?? [];
-
         return ListView.builder(
           itemCount: movies.length,
           itemBuilder: (context, index) {
             final movie = movies[index];
             return _MovieItem(
               movie: movie,
-              onMovieSeleced: close,
+              onMovieSeleced: (context, movie) {
+                clearStreams();
+                close(context, movie);
+              },
             );
           },
         );
       },
     );
+  }
+
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      StreamBuilder(
+        initialData: false,
+        stream: isLoadingStream.stream,
+        builder: (context, snapshot) {
+          if (snapshot.data ?? false) {
+            return SpinPerfect(
+                duration: const Duration(seconds: 20),
+                spins: 10,
+                infinite: true,
+                child: IconButton(
+                    onPressed: () => query = "",
+                    icon: const Icon(Icons.refresh_rounded)));
+          }
+          return //if (query.isNotEmpty)
+              FadeIn(
+                  child: IconButton(
+                      onPressed: () => query = "",
+                      icon: const Icon(Icons.clear)));
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+        onPressed: () {
+          clearStreams();
+          close(context, null);
+        },
+        icon: Icon(Icons.arrow_back_ios_new));
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return buildResultsAndSuggestions();
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    _onQueryChanged(query);
+    return buildResultsAndSuggestions();
   }
 }
 
