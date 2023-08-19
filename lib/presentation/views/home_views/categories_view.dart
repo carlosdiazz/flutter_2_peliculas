@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class FavoritesView extends StatelessWidget {
-  const FavoritesView({super.key});
+class CategoriesView extends StatelessWidget {
+  const CategoriesView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Favorites View"),
         centerTitle: true,
+        title: const Text("Categories View"),
       ),
       body: const Center(
-        child: Text("Favorites View"),
+        child: Text("Categories"),
       ),
     );
   }

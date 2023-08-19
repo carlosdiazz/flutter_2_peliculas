@@ -1,9 +1,10 @@
-import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_2_cinema_app/domain/entities/movie.dart';
-import 'package:flutter_2_cinema_app/presentation/providers/movies/movie_details_provider.dart';
-import 'package:flutter_2_cinema_app/presentation/providers/providers.dart';
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+//Propio
+import 'package:flutter_2_cinema_app/domain/entities/movie.dart';
+import 'package:flutter_2_cinema_app/presentation/providers/providers.dart';
 
 class MovieScreen extends ConsumerStatefulWidget {
   const MovieScreen({super.key, required this.movieId});
@@ -138,6 +139,18 @@ class _CustomSliverAppBar extends StatelessWidget {
 
     return SliverAppBar(
       backgroundColor: Colors.black,
+      actions: [
+        IconButton(
+          onPressed: () {
+            //TODO realizar el togle
+          },
+          icon: Icon(Icons.favorite_border_outlined),
+          //icon: const Icon(
+          //  Icons.favorite_rounded,
+          //  color: Colors.red,
+          //)
+        )
+      ],
       floating: true,
       expandedHeight: size.height * 0.7,
       foregroundColor: Colors.white,
@@ -159,28 +172,29 @@ class _CustomSliverAppBar extends StatelessWidget {
           ),
 
           //? Fondo transparente para el titulo
-          const SizedBox.expand(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      stops: [0.7, 1.0],
-                      colors: [Colors.transparent, Colors.black87])),
-            ),
+          const _CustomGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops: [0.8, 1.0],
+              colors: [Colors.transparent, Colors.black87]),
+
+          //? Fondo transparente para el Corazon
+          const _CustomGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomLeft,
+            stops: [0.0, 0.2],
+            colors: [
+              Colors.black87,
+              Colors.transparent,
+            ],
           ),
 
           //?Fondo transparente para la flecha
-          const SizedBox.expand(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      //end: Alignment.bottomCenter,
-                      stops: [0.0, 0.3],
-                      colors: [Colors.black87, Colors.transparent])),
-            ),
-          )
+          const _CustomGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomCenter,
+              stops: [0.0, 0.3],
+              colors: [Colors.black87, Colors.transparent]),
         ]),
       ),
     );
@@ -248,6 +262,30 @@ class _ActorsByMovie extends ConsumerWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _CustomGradient extends StatelessWidget {
+  const _CustomGradient(
+      {required this.begin,
+      required this.end,
+      required this.stops,
+      required this.colors});
+
+  final AlignmentGeometry begin;
+  final AlignmentGeometry end;
+  final List<double> stops;
+  final List<Color> colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.expand(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: begin, end: end, stops: stops, colors: colors)),
       ),
     );
   }
