@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+//PRopio
 import 'package:flutter_2_cinema_app/domain/entities/movie.dart';
 import 'package:flutter_2_cinema_app/presentation/delegates/search_movie_delegate.dart';
 import 'package:flutter_2_cinema_app/presentation/providers/providers.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class CustomAppBar extends ConsumerWidget {
   const CustomAppBar({super.key});
