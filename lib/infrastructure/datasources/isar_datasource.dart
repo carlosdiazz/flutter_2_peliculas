@@ -9,7 +9,7 @@ class IsarDatasource extends LocalStorageDatasource {
   late Future<Isar> db;
 
   IsarDatasource() {
-    //db =;
+    db = openDB();
   }
 
   Future<Isar> openDB() async {

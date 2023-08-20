@@ -128,28 +128,49 @@ class _MovieDetails extends StatelessWidget {
   }
 }
 
-class _CustomSliverAppBar extends StatelessWidget {
+final isFavoriteProvider =
+    FutureProvider.family.autoDispose((ref, int movieId) {
+  final localStorageRepository = ref.watch(localStorageRepositoryProvider);
+  return localStorageRepository.isMovieFavorite(movieId);
+});
+
+class _CustomSliverAppBar extends ConsumerWidget {
   const _CustomSliverAppBar({required this.movie});
 
   final Movie movie;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     final size = MediaQuery.of(context).size;
+
+    final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
 
     return SliverAppBar(
       backgroundColor: Colors.black,
       actions: [
         IconButton(
-          onPressed: () {
-            //TODO realizar el togle
-          },
-          icon: Icon(Icons.favorite_border_outlined),
-          //icon: const Icon(
-          //  Icons.favorite_rounded,
-          //  color: Colors.red,
-          //)
-        )
+            onPressed: () async {
+              await ref
+                  .watch(localStorageRepositoryProvider)
+                  .toggleFavorite(movie);
+              ref.invalidate(isFavoriteProvider(movie.id));
+              //Esto invalida el estado del mprovider y lo vuleve a el estado original
+            },
+            icon: isFavoriteFuture.when(
+              data: (isFavorite) => isFavorite
+                  ? const Icon(
+                      Icons.favorite_rounded,
+                      color: Colors.red,
+                    )
+                  : const Icon(
+                      Icons.favorite_border_outlined,
+                    ),
+              error: (error, stackTrace) => throw UnimplementedError(),
+              loading: () => const CircularProgressIndicator(),
+            )
+            //Icon(Icons.favorite_border_outlined),
+
+            )
       ],
       floating: true,
       expandedHeight: size.height * 0.7,
