@@ -7,3 +7,5 @@ export 'movies/similar_movies.dart';
 export 'shared/custom_bottom_navigationbar.dart';
 export 'shared/full_screen_loader.dart';
 export 'shared/custom_appbar.dart';
+
+export "videos/video_from_movie.dart";

@@ -1,5 +1,6 @@
 import 'package:flutter_2_cinema_app/domain/datasources/movies_datasource.dart';
 import 'package:flutter_2_cinema_app/domain/entities/movie.dart';
+import 'package:flutter_2_cinema_app/domain/entities/video.dart';
 import 'package:flutter_2_cinema_app/domain/repositories/movies_repository.dart';
 
 class MovieRepositoryImpl extends MoviesRepository {
@@ -40,5 +41,10 @@ class MovieRepositoryImpl extends MoviesRepository {
   @override
   Future<List<Movie>> getSimilarMovies({required int movieID}) {
     return datasource.getSimilarMovies(movieID: movieID);
+  }
+
+  @override
+  Future<List<Video>> getYoutubeVideosById({required int movieId}) {
+    return datasource.getYoutubeVideosById(movieId: movieId);
   }
 }

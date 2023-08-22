@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:flutter_2_cinema_app/presentation/widgets/widggets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //Propio
 import 'package:flutter_2_cinema_app/domain/entities/movie.dart';
 import 'package:flutter_2_cinema_app/presentation/providers/providers.dart';
+import 'package:flutter_2_cinema_app/presentation/widgets/widggets.dart';
 
 class MovieScreen extends ConsumerStatefulWidget {
   const MovieScreen({super.key, required this.movieId});
@@ -42,7 +42,10 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
+          //* Aqui esta la imagen de atras de fondo
           _CustomSliverAppBar(movie: movie),
+
+          //* Aqui estara lo que falta de la pantalla
           SliverList(
               delegate: SliverChildBuilderDelegate(
                   (context, index) => _MovieDetails(movie: movie),
@@ -59,68 +62,83 @@ class _MovieDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(movie.id);
     final size = MediaQuery.of(context).size;
     final textStyle = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(10),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //?Imagen del Pposter
-              Hero(
-                tag: movie.id,
-                child: ClipRRect(
-                  borderRadius: BorderRadiusDirectional.circular(20),
-                  child: Image.network(
-                    movie.posterPath,
-                    width: size.width * 0.3,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              SizedBox(
-                width: (size.width - 60) * 0.7,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        movie.title,
-                        style: textStyle.titleLarge,
-                      ),
-                      Text(movie.overview)
-                    ]),
-              )
-            ],
-          ),
-        ),
+        //*Poster, titulo y descripcion
+        _PosterAndTitle(movie: movie, size: size, textStyle: textStyle),
 
-        //Muestros los Generos de la peliculas
+        //* Muestros los Generos de la peliculas
         Generos(movie: movie),
 
-        //Muestro actores de la pelicula
+        //* Muestro actores de la pelicula
         _ActorsByMovie(
           movieId: movie.id.toString(),
         ),
 
-        //Espacio Final abajo
-        const SizedBox(
-          height: 100,
-        ),
-
+        //* Peliculas similares
         SimilarMovies(movieId: movie.id),
+
+        //* Video Trailer
+        VideosFromMovie(movieId: movie.id),
 
         //Espacio Final abajo
         const SizedBox(
           height: 100,
         ),
       ],
+    );
+  }
+}
+
+class _PosterAndTitle extends StatelessWidget {
+  const _PosterAndTitle({
+    required this.movie,
+    required this.size,
+    required this.textStyle,
+  });
+
+  final Movie movie;
+  final Size size;
+  final TextTheme textStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          //?Imagen del Pposter
+          Hero(
+            tag: movie.id,
+            child: ClipRRect(
+              borderRadius: BorderRadiusDirectional.circular(20),
+              child: Image.network(
+                movie.posterPath,
+                width: size.width * 0.3,
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          SizedBox(
+            width: (size.width - 60) * 0.7,
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                movie.title,
+                style: textStyle.titleLarge,
+              ),
+              Text(movie.overview)
+            ]),
+          )
+        ],
+      ),
     );
   }
 }
@@ -167,11 +185,13 @@ class _CustomSliverAppBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final size = MediaQuery.of(context).size;
-
     final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
+    final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
 
     return SliverAppBar(
       backgroundColor: Colors.black,
+      expandedHeight: size.height * 0.7,
+      foregroundColor: Colors.white,
       actions: [
         IconButton(
             onPressed: () async {
@@ -200,9 +220,7 @@ class _CustomSliverAppBar extends ConsumerWidget {
 
             )
       ],
-      floating: true,
-      expandedHeight: size.height * 0.7,
-      foregroundColor: Colors.white,
+      //floating: true,
       flexibleSpace: FlexibleSpaceBar(
         centerTitle: false,
         //title: Text(movie.title),
