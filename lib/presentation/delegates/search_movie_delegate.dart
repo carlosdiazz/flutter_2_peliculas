@@ -133,9 +133,13 @@ class _MovieItem extends StatelessWidget {
             SizedBox(
               width: size.width * 0.2,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(movie.posterPath),
-              ),
+                  borderRadius: BorderRadius.circular(20),
+                  child: FadeInImage(
+                    image: NetworkImage(movie.posterPath),
+                    height: 130,
+                    fit: BoxFit.cover,
+                    placeholder: const AssetImage("assets/loader.gif"),
+                  )),
             ),
 
             const SizedBox(

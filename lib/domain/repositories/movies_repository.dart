@@ -12,4 +12,6 @@ abstract class MoviesRepository {
   Future<Movie> getMovieById({required String id});
 
   Future<List<Movie>> searchMovies({required String query});
+
+  Future<List<Movie>> getSimilarMovies({required int movieID});
 }

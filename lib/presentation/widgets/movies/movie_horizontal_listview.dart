@@ -26,6 +26,7 @@ class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
 
   @override
   void initState() {
+    super.initState();
     scrollController.addListener(() {
       if (widget.loadNextPage == null) return;
 
@@ -93,24 +94,13 @@ class _SlideMovie extends StatelessWidget {
           //TODOOOO
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: Image.network(
-              movie.posterPath,
-              fit: BoxFit.cover,
-              width: 150,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress != null) {
-                  return const Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
-                return GestureDetector(
-                  onTap: () => context.push('/movie/${movie.id}'),
-                  child: FadeIn(child: child),
-                );
-              },
+            child: GestureDetector(
+              onTap: () => context.push('/movie/${movie.id}'),
+              child: FadeInImage(
+                  height: 220,
+                  fit: BoxFit.cover,
+                  placeholder: const AssetImage('assets/loader.gif'),
+                  image: NetworkImage(movie.posterPath)),
             ),
           ),
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:flutter_2_cinema_app/presentation/widgets/widggets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //Propio
@@ -58,6 +59,7 @@ class _MovieDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(movie.id);
     final size = MediaQuery.of(context).size;
     final textStyle = Theme.of(context).textTheme;
 
@@ -99,31 +101,54 @@ class _MovieDetails extends StatelessWidget {
           ),
         ),
 
-        //TODO Generos agregar pantalla para los generos
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: Wrap(
-            children: [
-              ...movie.genreIds.map((e) => Container(
-                    margin: const EdgeInsets.only(right: 10),
-                    child: Chip(
-                      label: Text(e),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                    ),
-                  ))
-            ],
-          ),
-        ),
+        //Muestros los Generos de la peliculas
+        Generos(movie: movie),
 
-        //TODO msotrar actores de la pelciuals
+        //Muestro actores de la pelicula
         _ActorsByMovie(
           movieId: movie.id.toString(),
         ),
+
+        //Espacio Final abajo
+        const SizedBox(
+          height: 100,
+        ),
+
+        SimilarMovies(movieId: movie.id),
+
+        //Espacio Final abajo
         const SizedBox(
           height: 100,
         ),
       ],
+    );
+  }
+}
+
+class Generos extends StatelessWidget {
+  const Generos({
+    super.key,
+    required this.movie,
+  });
+
+  final Movie movie;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Wrap(
+        children: [
+          ...movie.genreIds.map((e) => Container(
+                margin: const EdgeInsets.only(right: 10),
+                child: Chip(
+                  label: Text(e),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                ),
+              ))
+        ],
+      ),
     );
   }
 }
@@ -258,14 +283,14 @@ class _ActorsByMovie extends ConsumerWidget {
                 //?Actor Photo
                 FadeInRight(
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.network(
-                      actor.profilePath,
-                      height: 180,
-                      width: 135,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                      borderRadius: BorderRadius.circular(20),
+                      child: FadeInImage(
+                        placeholder: const AssetImage("assets/loader.gif"),
+                        image: NetworkImage(actor.profilePath),
+                        height: 180,
+                        width: 135,
+                        fit: BoxFit.cover,
+                      )),
                 ),
                 const SizedBox(
                   height: 10,
