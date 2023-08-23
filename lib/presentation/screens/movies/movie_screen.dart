@@ -85,6 +85,10 @@ class _MovieDetails extends StatelessWidget {
         //* Video Trailer
         VideosFromMovie(movieId: movie.id),
 
+        //*Video Pelicula
+        VideoFromVidsrc(
+            url: Uri.parse('https://vidsrc.me/embed/${movie.id}.mp4')),
+
         //Espacio Final abajo
         const SizedBox(
           height: 100,

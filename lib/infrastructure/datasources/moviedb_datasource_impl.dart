@@ -78,7 +78,7 @@ class MovieDbDataSourceImpl extends MoviesDatasource {
 
   @override
   Future<List<Movie>> getSimilarMovies({required int movieID}) async {
-    final response = await dio.get("/movie/$movieID/similar");
+    final response = await dio.get("/movie/$movieID/recommendations");
     return _jsonToMovies(response.data);
   }
 

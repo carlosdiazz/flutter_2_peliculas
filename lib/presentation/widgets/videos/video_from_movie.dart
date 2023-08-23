@@ -46,7 +46,7 @@ class _Videoslist extends StatelessWidget {
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 10),
           child: Text(
-            'Videos',
+            'Trailer',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ),
@@ -108,7 +108,13 @@ class __YoutubeVideoPlayerStateState extends State<_YoutubeVideoPlayerState> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Column(
-        children: [Text(widget.name), YoutubePlayer(controller: _controller)],
+        children: [
+          //Text(widget.name),
+          const SizedBox(
+            height: 10,
+          ),
+          YoutubePlayer(controller: _controller)
+        ],
       ),
     );
   }
