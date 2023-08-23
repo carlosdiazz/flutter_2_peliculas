@@ -22,14 +22,16 @@ class AppThemeCustom {
           selectColor: selectColor ?? this.selectColor,
           isDarkMode: isDarkMode ?? this.isDarkMode);
 
-  AppThemeCustom({this.isDarkMode = true, this.selectColor = 1})
+  AppThemeCustom({required this.isDarkMode, required this.selectColor})
       : assert(selectColor >= 0, "El indice de color no puede ser menor que 0"),
         assert(selectColor < colorList.length,
             "El índice de color está fuera del rango permitido");
 
-  ThemeData getTheme() => ThemeData(
-      useMaterial3: true,
-      brightness: isDarkMode ? Brightness.dark : Brightness.light,
-      colorSchemeSeed: colorList[selectColor],
-      appBarTheme: const AppBarTheme(centerTitle: false));
+  ThemeData getTheme() {
+    return ThemeData(
+        useMaterial3: true,
+        brightness: isDarkMode ? Brightness.dark : Brightness.light,
+        colorSchemeSeed: colorList[selectColor],
+        appBarTheme: const AppBarTheme(centerTitle: false));
+  }
 }
