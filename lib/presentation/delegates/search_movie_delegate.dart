@@ -96,7 +96,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
           clearStreams();
           close(context, null);
         },
-        icon: Icon(Icons.arrow_back_ios_new));
+        icon: const Icon(Icons.arrow_back_ios_new));
   }
 
   @override
@@ -104,9 +104,23 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
     return buildResultsAndSuggestions();
   }
 
+  Widget emptyContainer() {
+    return const Center(
+      child: Icon(
+        Icons.movie_creation_outlined,
+        color: Colors.black38,
+        size: 200,
+      ),
+    );
+  }
+
   @override
   Widget buildSuggestions(BuildContext context) {
     _onQueryChanged(query);
+    if (query.isEmpty) {
+      return emptyContainer();
+    }
+
     return buildResultsAndSuggestions();
   }
 }
